@@ -7,6 +7,7 @@ var	mongoose = require('../../config/mongoose')(),
 // var Place = mongoose.model('Place'),
 // 	User = mongoose.model('User');
 
+var Vendor = mongoose.model('Vendor');
 
 // Define the routes module' method
 module.exports = function(app) {
