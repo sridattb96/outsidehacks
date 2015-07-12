@@ -17,7 +17,11 @@
 		    	<div class="modal-content">
 		      		<div class="modal-header">
 		        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<<<<<<< HEAD
 		        		<h1 class="modal-title" id="myModalLabel">{{ v.name }}</h1>
+=======
+		        		<h4 class="modal-title" id="myModalLabel">{{ v.name }}</h4>
+>>>>>>> 2d220c95e8b091b9ed44fb53d1e84d3a94163729
 		      		</div>
 		      		<div class="modalVendorRatingFavFood">
 		      		<div class="row lead">
@@ -32,7 +36,7 @@
 		  	</div>
 		 	<div class="modal-footer">
 		    	<button type="button" class="btn btn-default" data-dismiss="modal">Exit</button>
-		    	<button type="button" class="btn btn-primary" ng-click="submitModalReview()">Submit</button>
+		    	<button type="button" class="btn btn-primary" ng-click="submitModalReview(v)">Submit</button>
 		  	</div>
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
@@ -53,12 +57,14 @@
 			<td></td>
 			<td class="title">Restaurant</td>
 			<td class="title">Rating</td>
-			<td class="title">Top</td>
+			<td class="title">Top Snack</td>
+			<td class="title"># of Visitors </td>	
 			<tr ng-repeat="item in vendorList">
 				<td class="item"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="vendorModal(item)">Rate</button></td>
 				<td class="item">{{ item.name }}</td>
 				<td class="item">{{ item.rating }}</td>
 				<td class="item">{{ item.favoriteFood }}</td>
+				<td class="item">{{ item.numberVisited }} </td>
 			</tr>
 		</table>
 	</body>
@@ -283,14 +289,14 @@
 				});
 			}
 
-			$scope.submitModalReview = function() {
+			$scope.submitModalReview = function(clickedItem) {
 				var modalReview = $scope.modalReview;
 				$http({
-					method: 'get',
+					method: 'post',
 					url: '/api/putEntryAndGetAvg',
 					data: {
-						vendor: currentVendor._id,
-						rating: modalRating,
+						vendor: clickedItem._id,
+						rating: modalReview.rating,
 						favoriteFood: modalReview.favoriteFood
 					}
 				}).success(function(data) {
@@ -300,7 +306,6 @@
 
 			$scope.currentVendor;
 			$scope.vendorModal = function(item) {
-				currentVendor = item;
 				$scope.v = item;
 				console.log(item.name);
 			}
