@@ -17,19 +17,13 @@
 		    	<div class="modal-content">
 		      		<div class="modal-header">
 		        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-<<<<<<< HEAD
 		        		<h1 class="modal-title" id="myModalLabel">{{ v.name }}</h1>
-=======
-		        		<h4 class="modal-title" id="myModalLabel">{{ v.name }}</h4>
->>>>>>> 2d220c95e8b091b9ed44fb53d1e84d3a94163729
 		      		</div>
 		      		<div class="modalVendorRatingFavFood">
 		      		<div class="row lead">
+		      			<h4 id="star-heading">Rate {{ v.name }}</h4>
         				<div id="stars" class="starrr"></div>
-        					You gave a rating of <span id="count">0</span> star(s)
 						</div>     				   
-						<h1>{{ modalRating }}</h1>   			
-		      			<input type="text" class="form-control box" ng-model="modalReview.rating" placeholder="{{ modalRating }}">
 		      			<input type="text" class="form-control box" ng-model="modalReview.favoriteFood" placeholder="Favorite item"> 
 		      		</div>
 		      	<div class="modal-body">
@@ -42,27 +36,56 @@
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 
+
+		<!-- New vendor modal -->
+		<div class="modal fade" id="addNewVendorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  	<div class="modal-dialog">
+		    	<div class="modal-content">
+		      		<div class="modal-header">
+		        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        		<h1 class="modal-title" id="myModalLabel">{{ vendor.name }}</h1>
+		      		</div>
+		      		<div class="modalVendorRatingFavFood">
+		      		<div class="row lead">
+		      			<h4 id="star-heading">Rate {{ vendor.name }}</h4>
+        				<div id="stars" class="starrr"></div>
+						</div>     				   
+		      			<input type="text" class="form-control box" ng-model="vendor.favoriteFood" placeholder="Favorite item"> 
+		      		</div>
+		      	<div class="modal-body">
+		  	</div>
+		 	<div class="modal-footer">
+		    	<button type="button" class="btn btn-default" data-dismiss="modal">Exit</button>
+		    	<button type="button" class="btn btn-primary" ng-click="submitVendor()">Submit</button>
+		  	</div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
 		<div id="heading">
 			<h1 class="title">Outside</h1>
 			<h1 class="title">Snacks</h1>
 		</div>
 		<div class="vendorInputs">
-			<input type="text" class="form-control box empty" id="iconify" ng-model="vendor.name" placeholder="Add a vendor">
-			<input type="text" class="form-control box" ng-model="vendor.rating" placeholder="Rating">
-			<input type="text" class="form-control box" ng-model="vendor.favoriteFood" placeholder="Favorite item"> 
-		<button class="btn btn-primary" ng-click="submitVendor()">Submit</button>
-	</div>
+			<form>
+				<input type="text" class="form-control box empty" id="iconify" ng-model="vendor.name" placeholder="Add a vendor" required>
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewVendorModal" ng-click="submitVendor()">Submit</button>
+			</form>
+
+ 	</div>
 		<!-- ng-repeat through the data and display in a table -->
 		<table class="table">
-			<td></td>
-			<td class="title">Restaurant</td>
-			<td class="title">Rating</td>
-			<td class="title">Top Snack</td>
-			<td class="title"># of Visitors </td>	
-			<tr ng-repeat="item in vendorList">
+			<tr>
+				<th></th>
+				<th class="title" ng-click="changeSorting('name')">Vendor<span><i class="fa fa-caret-down"></i></span></th>
+				<th class="title" ng-click="changeSorting('rating')">Rating<span><i class="fa fa-caret-down"></i></span></th>
+				<th class="title">Top Item</td>
+				<th class="title" ng-click="changeSorting('numberVisited')">Visitors<span><i class="fa fa-caret-down"></i></span></th>	
+			</tr>
+			<tr ng-repeat="item in vendorList | orderBy:sort.column:sort.descending">
 				<td class="item"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="vendorModal(item)">Rate</button></td>
 				<td class="item">{{ item.name }}</td>
-				<td class="item">{{ item.rating }}</td>
+				<td class="item">{{ item.rating | number : 1 }}</td>
 				<td class="item">{{ item.favoriteFood }}</td>
 				<td class="item">{{ item.numberVisited }} </td>
 			</tr>
@@ -73,33 +96,10 @@
 			font-family: 'Lato', sans-serif;
 		}
 		.starrr {
+			font-size: 30px;
 			margin: 20px;
 			text-align: center;
 			color: #FF9900;
-		}
-		.rating {
-			unicode-bidi: bidi-override;
-			direction: rtl;
-			margin: 20px;
-			text-align: center;
-			padding: 0px;
-			color: #FF9900;
-			font-size: 30px;
-			list-style-type: none;
-		}
-
-		.rating > span:hover:before {
-			font-size: 30px;
-			padding: 0px;
-			margin: 20px;
-			content: "\2605";
-			position: absolute;
-		}
-
-		.rating > span:hover:before,
-		.rating > span:hover ~ span:before {
-			content: : "\2605";
-			position: absolute;
 		}
 
 		#heading {
@@ -148,16 +148,48 @@
 			text-align: center;
 		}
 
+		#star-heading {
+			text-align: center;
+			margin-top: 30px;
+			font-size: 20px;
+		}
+
+		.activeSortColumn {
+			visibility: hidden;
+		}
+
+		.currentCol {
+			visibility: visible;
+		}
+
 	</style>
 	<script>
 		// Starrr plugin (https://github.com/dobtco/starrr)
+
 		$('#myModal').on('shown.bs.modal', function () {
+			
 	  		$('#myInput').focus()
 		});
-		var main = angular.module('main', []);
 
+		var main = angular.module('main', [])
+		
 		main.controller('mainController', function ($scope, $http) {
-					var __slice = [].slice;
+			$scope.sort = {
+				column: '-rating',
+				descending: false
+			};
+
+			$scope.changeSorting = function(column) {
+				var sort = $scope.sort;
+
+				if (sort.column == column) {
+					sort.descending = !sort.descending;
+				} else {
+					sort.column = column;
+					sort.descending = false;
+				}
+			};
+		var __slice = [].slice;
 
 		(function($, window) {
 		    var Starrr;
@@ -279,8 +311,10 @@
 					//need to ng-repeat through data and display the information in a table on view
 				})
 			$scope.submitVendor = function() {
+				
 				console.log($scope.vendorName);
 				var vendor = $scope.vendor;
+				vendor.rating = modalRating;
 				$http({
 					method: 'POST',
 					url: '/api/putVendors',
@@ -288,10 +322,12 @@
 				}).success(function(data) {
 					console.log(data);
 				});
+				window.location.reload();
 			}
 
+			var modalReview;
 			$scope.submitModalReview = function(clickedItem) {
-				var modalReview = $scope.modalReview;
+				modalReview = $scope.modalReview;
 				$http({
 					method: 'post',
 					url: '/api/putEntryAndGetAvg',
@@ -303,6 +339,7 @@
 				}).success(function(data) {
 					console.log(data);
 				});
+				window.location.reload();
 			}
 
 			$scope.currentVendor;
@@ -311,6 +348,5 @@
 				console.log(item.name);
 			}
 		})
-
 	</script>
 </html>
