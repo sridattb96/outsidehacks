@@ -41,7 +41,6 @@ module.exports = function(app) {
 		// })
 	});
 
-
 	//get list of vendors currently in db
 	app.get('/api/getVendors', function(req, res){
 		Vendor.find({}, function(err, vendor){
