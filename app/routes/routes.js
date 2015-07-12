@@ -19,26 +19,26 @@ module.exports = function(app) {
 
 	//puts newly added vendor in db
 	app.post('/api/putVendors', function(req, res){
-		// var name = req.body.name.toLowerCase();
-		// console.log(name)
-		// Vendor.find({ name: name }, function(err, vendor){
-		// 	if (err)
-		// 		console.log(err)
-		// 	else {
-		// 		if (vendor){
-		// 			console.log(vendor);
-		// 			console.log('vendor already exists')
-		// 		} else {
+		var name = req.body.name.toLowerCase();
+		console.log(name)
+		Vendor.find({ name: name }, function(err, vendor){
+			if (err)
+				console.log(err)
+			else {
+				if (vendor.length > 0){
+					console.log(vendor);
+					console.log('vendor already exists')
+				} else {
 					Vendor.create({
-						name: req.body.name,
+						name: name,
 						rating: req.body.rating,
 						favoriteFood: req.body.favoriteFood
 					}, function(err, vendor){
 						res.send(vendor);
 					})
-		// 		}
-		// 	}
-		// })
+				}
+			}
+		})
 	});
 
 	//get list of vendors currently in db
@@ -66,7 +66,6 @@ module.exports = function(app) {
 			favoriteFood:'potatoes'
 		};
 
-		
 		Entry.create({
 			vendor: obj.vendor,
 			rating: obj.rating,
@@ -99,11 +98,6 @@ module.exports = function(app) {
 				//console.log(rating);
 				var avg = rating/entries.length;
 				console.log(avg);
-
-				V
-
-
-
 
 			})
 
