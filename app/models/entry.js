@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema; 
 
 var EntrySchema = new Schema({
-	rating: String,
+	vendor: String,
+	rating: Number,
 	favoriteFood: String
 })
 
