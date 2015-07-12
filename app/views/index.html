@@ -17,7 +17,7 @@
 		    	<div class="modal-content">
 		      		<div class="modal-header">
 		        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        		<h4 class="modal-title" id="myModalLabel">{{ vName }}</h4>
+		        		<h4 class="modal-title" id="myModalLabel">{{ v.name }}</h4>
 		      		</div>
 		      		<div class="modalVendorRatingFavFood">
 		      			<input type="text" class="form-control box" ng-model="modalReview.rating" placeholder="Rating">
@@ -27,7 +27,7 @@
 		  	</div>
 		 	<div class="modal-footer">
 		    	<button type="button" class="btn btn-default" data-dismiss="modal">Exit</button>
-		    	<button type="button" class="btn btn-primary" ng-click="submitModalReview()">Submit</button>
+		    	<button type="button" class="btn btn-primary" ng-click="submitModalReview(v)">Submit</button>
 		  	</div>
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
@@ -49,11 +49,13 @@
 			<td class="title">Restaurant</td>
 			<td class="title">Rating</td>
 			<td class="title">Top Snack</td>
+			<td class="title"># of Visitors </td>	
 			<tr ng-repeat="item in vendorList">
 				<td class="item"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="vendorModal(item)">Rate</button></td>
 				<td class="item">{{ item.name }}</td>
 				<td class="item">{{ item.rating }}</td>
 				<td class="item">{{ item.favoriteFood }}</td>
+				<td class="item">{{ item.numberVisited }} </td>
 			</tr>
 		</table>
 	</body>
@@ -132,19 +134,23 @@
 				});
 			}
 
-			$scope.submitModalReview = function() {
+			$scope.submitModalReview = function(clickedItem) {
 				var modalReview = $scope.modalReview;
 				$http({
-					method: 'POST',
+					method: 'post',
 					url: '/api/putEntryAndGetAvg',
-					data: modalReview
+					data: {
+						vendor: clickedItem._id,
+						rating: modalReview.rating,
+						favoriteFood: modalReview.favoriteFood
+					}
 				}).success(function(data) {
 					console.log(data);
 				});
 			}
 
 			$scope.vendorModal = function(item) {
-				$scope.vName = item.name;
+				$scope.v = item;
 				console.log(item.name);
 			}
 		})

@@ -32,9 +32,15 @@ module.exports = function(app) {
 					Vendor.create({
 						name: name,
 						rating: req.body.rating,
-						favoriteFood: req.body.favoriteFood
+						favoriteFood: req.body.favoriteFood,
+						numberVisited: 1
 					}, function(err, vendor){
 						res.send(vendor);
+						Entry.create({
+							vendor: vendor._id,
+							rating: req.body.rating,
+							favoriteFood: req.body.favoriteFood
+						})
 					})
 				}
 			}
@@ -57,19 +63,12 @@ module.exports = function(app) {
 		})
 	});
 
-	app.get('/api/putEntryAndGetAvg',function(req,res){
-		//console.log('inside avg');
-		//console.log('reaches Entries')
-		var obj = {
-			vendor: '1',
-			rating: 2,
-			favoriteFood:'potatoes'
-		};
+	app.post('/api/putEntryAndGetAvg',function(req,res){
 
 		Entry.create({
-			vendor: obj.vendor,
-			rating: obj.rating,
-			favoriteFood: obj.favoriteFood
+			vendor: req.body.vendor,
+			rating: req.body.rating,
+			favoriteFood: req.body.favoriteFood
 		},function(err,entry){
 			if(err)
 			{
@@ -80,7 +79,7 @@ module.exports = function(app) {
 				console.log('didnt get stored?');
 
 
-			Entry.find({ vendor: obj.vendor}, function(err, entries) {
+			Entry.find({ vendor: req.body.vendor}, function(err, entries) {
 				if (err) {
 					res.send(err)
 					res.json(entries); 
@@ -89,21 +88,48 @@ module.exports = function(app) {
 					res.send(null)
 
 				var rating = 0;
-				console.log(entries);
+				var obj = {};
+
+				console.log('# entries: ' + entries);
 				for(var i = 0; i < entries.length;i++)
 				{
-					console.log(entries[i].rating);
+					//console.log(entries[i].rating);
 					rating = rating + entries[i].rating;
+					if(obj.hasOwnProperty(entries[i].favoriteFood)){
+						obj[entries[i].favoriteFood]++;
+						console.log('increase');
+					} else {
+						obj[entries[i].favoriteFood]=1;
+					}
 				}
+				var max = entries[0].favoriteFood;
+				for (var i = 0; i<entries.length-1; i++)
+				{
+					if(obj[entries[i].favoriteFood] < obj[entries[i+1].favoriteFood])
+					{
+						max = entries[i+1].favoriteFood;
+					}
+				}
+				//console.log(max);
 				//console.log(rating);
 				var avg = rating/entries.length;
-				console.log(avg);
+				console.log('average: ' + avg);
 
+				Vendor.findOne({ _id: req.body.vendor },function(err,vendor){
+					if (err)
+						console.log(err);
+
+					if (!vendor)
+						console.log('no vendor matches ')
+
+					vendor.rating = avg;
+					vendor.favoriteFood = max;
+					vendor.numberVisited = entries.length;
+					console.log(entries.length);
+					vendor.save();
+				})
 			})
-
 		})
-		
-
 	});
 
 };
