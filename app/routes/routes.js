@@ -16,23 +16,45 @@ module.exports = function(app) {
 		res.render('index.html');
 	});
 
-	app.get('/api/putVendors', function(req, res){
-		// console.log('gets here');
-		// var req = {
-		// 	name: 'test',
-		// 	rating: 3.5,
-		// 	favoriteFood: 'potatoes'
-		// }
-		console.log('in here')
-		console.log(req);
-		Vendor.create({
-			name: req.name,
-			rating: req.rating,
-			favoriteFood: req.favoriteFood
-		}, function(err, vendor){
-			console.log(vendor);
+	//puts newly added vendor in db
+	app.post('/api/putVendors', function(req, res){
+		// var name = req.body.name.toLowerCase();
+		// console.log(name)
+		// Vendor.find({ name: name }, function(err, vendor){
+		// 	if (err)
+		// 		console.log(err)
+		// 	else {
+		// 		if (vendor){
+		// 			console.log(vendor);
+		// 			console.log('vendor already exists')
+		// 		} else {
+					Vendor.create({
+						name: req.body.name,
+						rating: req.body.rating,
+						favoriteFood: req.body.favoriteFood
+					}, function(err, vendor){
+						res.send(vendor);
+					})
+		// 		}
+		// 	}
+		// })
+	});
+
+
+	//get list of vendors currently in db
+	app.get('/api/getVendors', function(req, res){
+		Vendor.find({}, function(err, vendor){
+			if (err){
+				res.send(err)
+			}
+
+			if (!vendor){
+				console.log('da fuq')
+				res.send(null);
+			}
+
+			res.send(vendor);
 		})
 	})
 
-	//api's go here
 };
