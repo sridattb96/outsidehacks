@@ -192,6 +192,7 @@
 		            });
 		            this.$el.on('click.starrr', 'i', function(e) {
 		            	modalRating = _this.$el.find('i').index(e.currentTarget) + 1;
+		            	console.log("MODALRATING: " + modalRating);
 		                return _this.setRating(_this.$el.find('i').index(e.currentTarget) + 1);
 		            });
 		            this.$el.on('starrr:change', this.options.change);
@@ -296,7 +297,7 @@
 					url: '/api/putEntryAndGetAvg',
 					data: {
 						vendor: clickedItem._id,
-						rating: modalReview.rating,
+						rating: modalRating,
 						favoriteFood: modalReview.favoriteFood
 					}
 				}).success(function(data) {
