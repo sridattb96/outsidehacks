@@ -8,6 +8,12 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 		<link type="text/css" src="../../public/css/styles.css">
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css">
+
+		 <!-- Compiled and minified JavaScript -->
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
+		          
 		<title> Outside Snacks </title>
 	</head>
 	<body ng-controller="mainController"> 
@@ -53,7 +59,7 @@
 		<button class="btn btn-primary" id="submitButton" ng-click="submitVendor()">Submit</button>
 	</div>
 		<!-- ng-repeat through the data and display in a table -->
-		<table class="table">
+		<!-- <table class="table">
 			<td></td>
 			<td class="title">Restaurant</td>
 			<td class="title">Rating</td>
@@ -66,11 +72,39 @@
 				<td class="item">{{ item.favoriteFood }}</td>
 				<td class="item">{{ item.numberVisited }} </td>
 			</tr>
-		</table>
+		</table> -->
+
+		<div ng-repeat="item in vendorList">
+			<div class="row">
+		        <div class="col s12 m6">
+		          <div class="card orange lighten-3 z-depth-3">
+		            <div class="card-content black-text">
+		              <span class="card-title black-text"> {{ item.name }}</span> <span style="float: right;" id="ratingNum"> {{ item.rating }} / 5 </span>
+		              <p> Top Item: {{ item.favoriteFood }} </p>
+		            </div>
+		            <div class="card-action">
+		              <a href="#">This is a link</a>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		 </div>
+
+
+
+
+
 	</body>
 	<style>
+
+	#ratingNum{
+		font-size: 20px;
+	}
+
+
 		body {
 			font-family: 'Lato', sans-serif;
+			background-color: #fff3e0;
 		}
 		.starrr {
 			margin: 20px;
