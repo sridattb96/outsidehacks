@@ -35,7 +35,7 @@ module.exports = function() {
 	// Set the application view engine and 'views' folder
 	app.set('views', './app/views');
 	app.engine('html', require('ejs').renderFile);
-//	app.engine('ejs', require('ejs').renderFile);
+	app.engine('ejs', require('ejs').renderFile);
 
 	// Load the routing files
 	require('../app/routes/routes.js')(app);

@@ -16,5 +16,21 @@ module.exports = function(app) {
 		res.render('index.html');
 	});
 
+	app.get('/api/putVendors', function(req, res){
+		console.log('gets here');
+		var req = {
+			name: 'test',
+			rating: 3.5,
+			favoriteFood: 'potatoes'
+		}
+		Vendor.create({
+			name: req.name,
+			rating: req.rating,
+			favoriteFood: req.favoriteFood
+		}, function(err, vendor){
+			console.log(vendor);
+		})
+	})
+
 	//api's go here
-}
+};

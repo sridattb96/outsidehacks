@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var VendorSchema = new Schema({
 	name : String,
-	rating: String,
+	rating: Number,
 	favoriteFood: String
 })
 
