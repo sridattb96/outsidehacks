@@ -112,8 +112,6 @@ module.exports = function(app) {
 						max = entries[i+1].favoriteFood;
 					}
 				}
-				//console.log(max);
-				//console.log(rating);
 				var avg = rating/entries.length;
 				console.log('average: ' + avg);
 
