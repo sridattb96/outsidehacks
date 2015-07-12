@@ -60,17 +60,17 @@ module.exports = function(app) {
 	app.get('/api/putEntryAndGetAvg',function(req,res){
 		//console.log('inside avg');
 		//console.log('reaches Entries')
-		var obj = {
-			vendor: '1',
-			rating: 2,
-			favoriteFood:'potatoes'
-		};
+		// var obj = {
+		// 	vendor: '1',
+		// 	rating: 2,
+		// 	favoriteFood:'potatoes'
+		// };
 
 		
 		Entry.create({
-			vendor: obj.vendor,
-			rating: obj.rating,
-			favoriteFood: obj.favoriteFood
+			vendor: req.body.vendor,
+			rating: req.body.rating,
+			favoriteFood: req.body.favoriteFood
 		},function(err,entry){
 			if(err)
 			{
@@ -81,7 +81,7 @@ module.exports = function(app) {
 				console.log('didnt get stored?');
 
 
-			Entry.find({ vendor: obj.vendor}, function(err, entries) {
+			Entry.find({ vendor: req.body.vendor}, function(err, entries) {
 				if (err) {
 					res.send(err)
 					res.json(entries); 
@@ -100,7 +100,6 @@ module.exports = function(app) {
 				var avg = rating/entries.length;
 				console.log(avg);
 
-				V
 
 
 
