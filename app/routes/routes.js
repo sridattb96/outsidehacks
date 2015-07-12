@@ -18,18 +18,20 @@ module.exports = function(app) {
 
 	//puts newly added vendor in db
 	app.post('/api/putVendors', function(req, res){
-		// var name = req.name.toLowerCase();
+		// var name = req.body.name.toLowerCase();
+		// console.log(name)
 		// Vendor.find({ name: name }, function(err, vendor){
 		// 	if (err)
 		// 		console.log(err)
 		// 	else {
 		// 		if (vendor){
+		// 			console.log(vendor);
 		// 			console.log('vendor already exists')
 		// 		} else {
 					Vendor.create({
-						name: req.name,
-						rating: req.rating,
-						favoriteFood: req.favoriteFood
+						name: req.body.name,
+						rating: req.body.rating,
+						favoriteFood: req.body.favoriteFood
 					}, function(err, vendor){
 						res.send(vendor);
 					})
@@ -38,21 +40,21 @@ module.exports = function(app) {
 		// })
 	});
 
+
 	//get list of vendors currently in db
-	app.get('/getVendors', function(req, res){
-		Vendor.find({}, function(err, vendorList){
-			if (err)
-				console.log(err)
-			else{
-				if (!vendorList){
-					console.log('No vendors')
-					res.send('There are currently')
-				}
+	app.get('/api/getVendors', function(req, res){
+		Vendor.find({}, function(err, vendor){
+			if (err){
+				res.send(err)
 			}
+
+			if (!vendor){
+				console.log('da fuq')
+				res.send(null);
+			}
+
+			res.send(vendor);
 		})
 	})
 
-
-
-	//api's go here
 };
