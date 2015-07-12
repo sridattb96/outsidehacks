@@ -18,9 +18,10 @@ module.exports = function(app) {
 	});
 
 	//puts newly added vendor in db
-	app.post('/api/putVendors', function(req, res){
+	app.post('/api/putVendors/:fingerprint', function(req, res){
 		var name = req.body.name.toLowerCase();
-		console.log(name)
+		//console.log(name)
+		console.log('fingerprint: ' + req.params.fingerprint);
 		Vendor.find({ name: name }, function(err, vendor){
 			if (err)
 				console.log(err)
@@ -33,7 +34,8 @@ module.exports = function(app) {
 						name: name,
 						rating: req.body.rating,
 						favoriteFood: req.body.favoriteFood,
-						numberVisited: 1
+						numberVisited: 1,
+						seen: [req.params.fingerprint]
 					}, function(err, vendor){
 						res.send(vendor);
 						Entry.create({
@@ -63,7 +65,7 @@ module.exports = function(app) {
 		})
 	});
 
-	app.post('/api/putEntryAndGetAvg',function(req,res){
+	app.post('/api/putEntryAndGetAvg/:fingerprint',function(req,res){
 
 		Entry.create({
 			vendor: req.body.vendor,
@@ -125,8 +127,11 @@ module.exports = function(app) {
 					vendor.rating = avg;
 					vendor.favoriteFood = max;
 					vendor.numberVisited = entries.length;
-					console.log(entries.length);
+					console.log(req.params.fingerprint);
+					vendor.seen.push(req.params.fingerprint);
+					//console.log(entries.length);
 					vendor.save();
+					res.send(vendor)
 				})
 			})
 		})

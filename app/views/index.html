@@ -17,10 +17,19 @@
 		    	<div class="modal-content">
 		      		<div class="modal-header">
 		        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<<<<<<< HEAD
+		        		<h1 class="modal-title" id="myModalLabel">{{ v.name }}</h1>
+
 		        		<h4 class="modal-title" id="myModalLabel">{{ v.name }}</h4>
+>>>>>>> 2d220c95e8b091b9ed44fb53d1e84d3a94163729
 		      		</div>
 		      		<div class="modalVendorRatingFavFood">
-		      			<input type="text" class="form-control box" ng-model="modalReview.rating" placeholder="Rating">
+		      		<div class="row lead">
+        				<div id="stars" class="starrr"></div>
+        					You gave a rating of <span id="count">0</span> star(s)
+						</div>     				   
+						<h1>{{ modalRating }}</h1>   			
+		      			<input type="text" class="form-control box" ng-model="modalReview.rating" placeholder="{{ modalRating }}">
 		      			<input type="text" class="form-control box" ng-model="modalReview.favoriteFood" placeholder="Favorite item"> 
 		      		</div>
 		      	<div class="modal-body">
@@ -41,7 +50,7 @@
 			<input type="text" class="form-control box empty" id="iconify" ng-model="vendor.name" placeholder="Add a vendor">
 			<input type="text" class="form-control box" ng-model="vendor.rating" placeholder="Rating">
 			<input type="text" class="form-control box" ng-model="vendor.favoriteFood" placeholder="Favorite item"> 
-		<button class="btn btn-primary" ng-click="submitVendor()">Submit</button>
+		<button class="btn btn-primary" id="submitButton" ng-click="submitVendor()">Submit</button>
 	</div>
 		<!-- ng-repeat through the data and display in a table -->
 		<table class="table">
@@ -51,8 +60,8 @@
 			<td class="title">Top Snack</td>
 			<td class="title"># of Visitors </td>	
 			<tr ng-repeat="item in vendorList">
-				<td class="item"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="vendorModal(item)">Rate</button></td>
-				<td class="item">{{ item.name }}</td>
+				<td class="item"><button ng-if="allowRate(item.seen)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="vendorModal(item)">Rate</button></td>
+				<td class="item">{{ item.name }}</td> 
 				<td class="item">{{ item.rating }}</td>
 				<td class="item">{{ item.favoriteFood }}</td>
 				<td class="item">{{ item.numberVisited }} </td>
@@ -62,6 +71,35 @@
 	<style>
 		body {
 			font-family: 'Lato', sans-serif;
+		}
+		.starrr {
+			margin: 20px;
+			text-align: center;
+			color: #FF9900;
+		}
+		.rating {
+			unicode-bidi: bidi-override;
+			direction: rtl;
+			margin: 20px;
+			text-align: center;
+			padding: 0px;
+			color: #FF9900;
+			font-size: 30px;
+			list-style-type: none;
+		}
+
+		.rating > span:hover:before {
+			font-size: 30px;
+			padding: 0px;
+			margin: 20px;
+			content: "\2605";
+			position: absolute;
+		}
+
+		.rating > span:hover:before,
+		.rating > span:hover ~ span:before {
+			content: : "\2605";
+			position: absolute;
 		}
 
 		#heading {
@@ -77,7 +115,6 @@
 		}
 
 		.vendorInputs {
-			margin-top: 30vh;
 		}
 		.box {
 			margin-top: 20px;
@@ -87,13 +124,16 @@
 		}
 
 		.btn {
-			display: inline-block;
+			display: relative;
+			margin-left: auto;
+			margin-right: auto;
 		}
 
 		.table {
+			margin-top: 50px;
+			margin-bottom: 50px;
 			margin-left: auto;
 			margin-right: auto;
-			margin-top: 30%;
 			width: 80%;
 		}
 
@@ -111,30 +151,153 @@
 	</style>
 	<script>
 
-		$(document).ready(function(){
-			var fingerprint = new Fingerprint().get();
-			console.log(fingerprint);
-		})
-
-
 		$('#myModal').on('shown.bs.modal', function () {
 	  		$('#myInput').focus()
 		});
 		var main = angular.module('main', []);
 
 		main.controller('mainController', function ($scope, $http) {
+					var __slice = [].slice;
+
+		(function($, window) {
+		    var Starrr;
+
+		    Starrr = (function() {
+		        Starrr.prototype.defaults = {
+		            rating: void 0,
+		            numStars: 5,
+		            change: function(e, value) {}
+		        };
+
+		        function Starrr($el, options) {
+		            var i, _, _ref,
+		                _this = this;
+
+		            this.options = $.extend({}, this.defaults, options);
+		            this.$el = $el;
+		            _ref = this.defaults;
+		            for (i in _ref) {
+		                _ = _ref[i];
+		                if (this.$el.data(i) != null) {
+		                    this.options[i] = this.$el.data(i);
+		                }
+		            }
+		            this.createStars();
+		            this.syncRating();
+		            this.$el.on('mouseover.starrr', 'i', function(e) {
+		                return _this.syncRating(_this.$el.find('i').index(e.currentTarget) + 1);
+		            });
+		            this.$el.on('mouseout.starrr', function() {
+		                return _this.syncRating();
+		            });
+		            this.$el.on('click.starrr', 'i', function(e) {
+		            	modalRating = _this.$el.find('i').index(e.currentTarget) + 1;
+		            	console.log("MODALRATING: " + modalRating);
+		                return _this.setRating(_this.$el.find('i').index(e.currentTarget) + 1);
+		            });
+		            this.$el.on('starrr:change', this.options.change);
+		        }
+
+		        Starrr.prototype.createStars = function() {
+		            var _i, _ref, _results;
+
+		            _results = [];
+		            for (_i = 1, _ref = this.options.numStars; 1 <= _ref ? _i <= _ref : _i >= _ref; 1 <= _ref ? _i++ : _i--) {
+		                _results.push(this.$el.append("<i class='fa fa-star-o'></i>"));
+		            }
+		            return _results;
+		        };
+
+		        Starrr.prototype.setRating = function(rating) {
+		            if (this.options.rating === rating) {
+		                rating = void 0;
+		            }
+		            this.options.rating = rating;
+		            this.syncRating();
+		            return this.$el.trigger('starrr:change', rating);
+		        };
+
+		        Starrr.prototype.syncRating = function(rating) {
+		            var i, _i, _j, _ref;
+
+		            rating || (rating = this.options.rating);
+		            if (rating) {
+		                for (i = _i = 0, _ref = rating - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+		                    this.$el.find('i').eq(i).removeClass('fa-star-o').addClass('fa-star');
+		                }
+		            }
+		            if (rating && rating < 5) {
+		                for (i = _j = rating; rating <= 4 ? _j <= 4 : _j >= 4; i = rating <= 4 ? ++_j : --_j) {
+		                    this.$el.find('i').eq(i).removeClass('fa-star').addClass('fa-star-o');
+		                }
+		            }
+		            if (!rating) {
+		                return this.$el.find('i').removeClass('fa-star').addClass('fa-star-o');
+		            }
+		        };
+
+		        return Starrr;
+
+		    })();
+		    return $.fn.extend({
+		        starrr: function() {
+		            var args, option;
+
+		            option = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+		            return this.each(function() {
+		                var data;
+
+		                data = $(this).data('star-rating');
+		                if (!data) {
+		                    $(this).data('star-rating', (data = new Starrr($(this), option)));
+		                }
+		                if (typeof option === 'string') {
+		                    return data[option].apply(data, args);
+		                }
+		            });
+		        }
+		    });
+		})(window.jQuery, window);
+
+		$(function() {
+		    return $(".starrr").starrr();
+		});
+
+			$scope.modalRating;
 			$http.get("/api/getVendors")
 				.success(function (data) {
 					$scope.vendorList = data;
-					console.log(data);
+					$('#stars').on('starrr:change', function(e, value){
+					    $('#count').html(value);
+					    console.log('modalRating: ' + modalRating);
+					    console.log("new rating!: " + modalRating);
+					});
+					  
+					$('#stars-existing').on('starrr:change', function(e, value){
+					    $('#count-existing').html(value);
+					});
 					//need to ng-repeat through data and display the information in a table on view
 				})
+
+			var fingerprint = new Fingerprint().get();
+			//	console.log(fingerprint);	
+
+			$scope.allowRate = function(seenArray){
+				//console.log(seenArray);
+			    for (var i = 0; i < seenArray.length; i++){
+			    	if (seenArray[i] == fingerprint){
+			    		return false
+			    	}
+			    }
+			    return true;
+			}	
+
 			$scope.submitVendor = function() {
-				console.log($scope.vendorName);
+				//console.log($scope.vendorName);
 				var vendor = $scope.vendor;
 				$http({
 					method: 'POST',
-					url: '/api/putVendors',
+					url: '/api/putVendors/' + fingerprint,
 					data: vendor
 				}).success(function(data) {
 					console.log(data);
@@ -142,20 +305,24 @@
 			}
 
 			$scope.submitModalReview = function(clickedItem) {
+				console.log(clickedItem.seen);
 				var modalReview = $scope.modalReview;
 				$http({
 					method: 'post',
-					url: '/api/putEntryAndGetAvg',
+					url: '/api/putEntryAndGetAvg/' + fingerprint,
 					data: {
 						vendor: clickedItem._id,
-						rating: modalReview.rating,
+						rating: modalRating,
 						favoriteFood: modalReview.favoriteFood
 					}
 				}).success(function(data) {
+					console.log('finishedSubmiting')
 					console.log(data);
+
 				});
 			}
 
+			$scope.currentVendor;
 			$scope.vendorModal = function(item) {
 				$scope.v = item;
 				console.log(item.name);
