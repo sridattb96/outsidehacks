@@ -5,7 +5,8 @@ var VendorSchema = new Schema({
 	name : String,
 	rating: Number,
 	favoriteFood: String,
-	numberVisited: Number
+	numberVisited: Number,
+	seen: Array
 })
 
 var Vendor = mongoose.model('Vendor', VendorSchema);

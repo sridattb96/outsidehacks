@@ -18,6 +18,12 @@
 		      		<div class="modal-header">
 		        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 		        		<h1 class="modal-title" id="myModalLabel">{{ v.name }}</h1>
+<<<<<<< HEAD
+=======
+
+		        		<h4 class="modal-title" id="myModalLabel">{{ v.name }}</h4>
+>>>>>>> 2d220c95e8b091b9ed44fb53d1e84d3a94163729
+>>>>>>> d4b15a88077c6cc17b1406e505423cfad2c250f9
 		      		</div>
 		      		<div class="modalVendorRatingFavFood">
 		      		<div class="row lead">
@@ -86,6 +92,22 @@
 				<td class="item"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="vendorModal(item)">Rate</button></td>
 				<td class="item">{{ item.name }}</td>
 				<td class="item">{{ item.rating | number : 1 }}</td>
+			<input type="text" class="form-control box empty" id="iconify" ng-model="vendor.name" placeholder="Add a vendor">
+			<input type="text" class="form-control box" ng-model="vendor.rating" placeholder="Rating">
+			<input type="text" class="form-control box" ng-model="vendor.favoriteFood" placeholder="Favorite item"> 
+		<button class="btn btn-primary" id="submitButton" ng-click="submitVendor()">Submit</button>
+	</div>
+		<!-- ng-repeat through the data and display in a table -->
+		<table class="table">
+			<td></td>
+			<td class="title">Restaurant</td>
+			<td class="title">Rating</td>
+			<td class="title">Top Snack</td>
+			<td class="title"># of Visitors </td>	
+			<tr ng-repeat="item in vendorList">
+				<td class="item"><button ng-if="allowRate(item.seen)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="vendorModal(item)">Rate</button></td>
+				<td class="item">{{ item.name }}</td> 
+				<td class="item">{{ item.rating }}</td>
 				<td class="item">{{ item.favoriteFood }}</td>
 				<td class="item">{{ item.numberVisited }} </td>
 			</tr>
@@ -165,7 +187,6 @@
 	</style>
 	<script>
 		// Starrr plugin (https://github.com/dobtco/starrr)
-
 		$('#myModal').on('shown.bs.modal', function () {
 			
 	  		$('#myInput').focus()
@@ -294,11 +315,11 @@
 		$(function() {
 		    return $(".starrr").starrr();
 		});
+
 			$scope.modalRating;
 			$http.get("/api/getVendors")
 				.success(function (data) {
 					$scope.vendorList = data;
-					console.log(data);
 					$('#stars').on('starrr:change', function(e, value){
 					    $('#count').html(value);
 					    console.log('modalRating: ' + modalRating);
@@ -310,14 +331,27 @@
 					});
 					//need to ng-repeat through data and display the information in a table on view
 				})
+
+			var fingerprint = new Fingerprint().get();
+			//	console.log(fingerprint);	
+
+			$scope.allowRate = function(seenArray){
+				//console.log(seenArray);
+			    for (var i = 0; i < seenArray.length; i++){
+			    	if (seenArray[i] == fingerprint){
+			    		return false
+			    	}
+			    }
+			    return true;
+			}	
+
 			$scope.submitVendor = function() {
-				
 				console.log($scope.vendorName);
 				var vendor = $scope.vendor;
 				vendor.rating = modalRating;
 				$http({
 					method: 'POST',
-					url: '/api/putVendors',
+					url: '/api/putVendors/' + fingerprint,
 					data: vendor
 				}).success(function(data) {
 					console.log(data);
@@ -330,14 +364,16 @@
 				modalReview = $scope.modalReview;
 				$http({
 					method: 'post',
-					url: '/api/putEntryAndGetAvg',
+					url: '/api/putEntryAndGetAvg/' + fingerprint,
 					data: {
 						vendor: clickedItem._id,
 						rating: modalRating,
 						favoriteFood: modalReview.favoriteFood
 					}
 				}).success(function(data) {
+					console.log('finishedSubmiting')
 					console.log(data);
+
 				});
 				window.location.reload();
 			}
