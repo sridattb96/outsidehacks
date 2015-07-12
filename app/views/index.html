@@ -1,15 +1,38 @@
-<html>
+<html ng-app="main">
 	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="css/styles.css">
-		<script src="js/index.js"></script>
-		<title> Outside Hacks </title>
+		<script type="text/javascript" src="js/index.js"></script>
+		<title> Outside Snacks </title>
 	</head>
-	<style>
+	<body ng-controller="mainController"> 
+		<h1>Outside Snaks</h1>
+		<div class="addVendorBar">
+		<input type="text" class="form-control" ng-model="vendor.name" placeholder="Add a vendor">
+		<input type="text" class="form-control" ng-model="vendor.rating" placeholder="Rating">
+		<input type="text" class="form-control" ng-model="vendor.favoriteFood" placeholder="Favorite item">
+		</div> 
+		<button class="btn btn-primary" ng-click="submitVendor()">Submit</button>
 
-	</style>
-	<body> Hello world
 	</body>
 	<script>
+		var main = angular.module('main', []);
+
+		main.controller('mainController', function ($scope, $http) {
+			$scope.submitVendor = function() {
+				console.log($scope.vendorName);
+				var vendor = $scope.vendor;
+				$http({
+					method: 'POST',
+					url: '/api/putVendors',
+					data: vendor
+				}).success(function(data) {
+					console.log(data);
+				});
+			}
+		})
 
 	</script>
 </html>
