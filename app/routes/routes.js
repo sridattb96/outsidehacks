@@ -17,12 +17,14 @@ module.exports = function(app) {
 	});
 
 	app.get('/api/putVendors', function(req, res){
-		console.log('gets here');
-		var req = {
-			name: 'test',
-			rating: 3.5,
-			favoriteFood: 'potatoes'
-		}
+		// console.log('gets here');
+		// var req = {
+		// 	name: 'test',
+		// 	rating: 3.5,
+		// 	favoriteFood: 'potatoes'
+		// }
+		console.log('in here')
+		console.log(req);
 		Vendor.create({
 			name: req.name,
 			rating: req.rating,
