@@ -110,6 +110,13 @@
 
 	</style>
 	<script>
+
+		$(document).ready(function(){
+			var fingerprint = new Fingerprint().get();
+			console.log(fingerprint);
+		})
+
+
 		$('#myModal').on('shown.bs.modal', function () {
 	  		$('#myInput').focus()
 		});
