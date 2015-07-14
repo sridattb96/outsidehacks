@@ -29,8 +29,7 @@
 		      		<div class="row lead">
         				<div id="stars" class="starrr"></div>
 						</div>     				   
-<!-- 		      			<input type="text" class="form-control box" ng-model="modalReview.rating" placeholder="{{ modalRating }}">
- -->		      			<input type="text" class="form-control box" ng-model="modalReview.favoriteFood" placeholder="Favorite item"> 
+		      			<input type="text" class="form-control box" ng-model="modalReview.favoriteFood" placeholder="Favorite item"> 
 		      		</div>
 		      	<div class="modal-body">
 		  	</div>
@@ -67,15 +66,19 @@
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 
+
 		<div id="heading">
-			<h1 class="title">Outside</h1>
-			<h1 class="title">Snacks</h1>
+			<img src="outsidesnacks.png" alt="">
 		</div>
 
 		<div class="vendorInputs">
 			<form>
-				<input type="text" class="form-control box empty" id="iconify" ng-model="vendor.name" placeholder="Add a vendor" required>
-				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewVendorModal" ng-click="submitVendor()">Submit</button>
+				<!-- <input type="text" class="form-control box empty" id="iconify" ng-model="vendor.name" placeholder="Add a vendor" required> -->
+				<div class="input-field col s6">
+		          <input type="text" class="form-control box empty" id="iconify" ng-model="vendor.name" required>
+		          <label required>Add a Vendor</label>
+				<button type="button" id="submit" class="btn btn-primary" data-toggle="modal" data-target="#addNewVendorModal" ng-click="submitVendor()">Submit</button>
+				</div>
 			</form>
 
  		</div>
@@ -88,7 +91,7 @@
 		<button class="btn btn-primary" id="submitButton" ng-click="submitVendor()">Submit</button>
 	</div> -->
 		<!-- ng-repeat through the data and display in a table -->
-		<table class="table">
+		<!-- <table class="table" style="border-width: 5px;">
 			<tr>
 				<th></th>
 				<th class="title" ng-click="changeSorting('name')">Vendor<span><i class="fa fa-caret-down"></i></span></th>
@@ -103,37 +106,87 @@
 				<td class="item">{{ item.favoriteFood }}</td>
 				<td class="item">{{ item.numberVisited }} </td>
 			</tr>
-		</table>
+		</table> -->
 
-		<div ng-repeat="item in vendorList">
-			<div class="row">
-		        <div class="col s12 m6">
-		          <div class="card orange lighten-3 z-depth-3">
-		            <div class="card-content black-text">
-		              <span class="card-title black-text"> {{ item.name }}</span> <span style="float: right;"; id="ratingNum"> {{ item.rating }} / 5 </span>
-		              <p> Top Item: {{ item.favoriteFood }} </p>
-		            </div>
-		            <div class="card-action">
-		              <a href="#">This is a link</a>
-		            </div>
-		          </div>
-		        </div>
-		      </div>
+		<div class="filter-cards"> <span id="filter"> Filter By: </span>
+			<button type="button" class="btn btn-primary" ng-click="changeSorting('name')">Name</button>
+			<button type="button" class="btn btn-primary" ng-click="changeSorting('rating')">Rating</button>
+			<button type="button" class="btn btn-primary" ng-click="changeSorting('numberVisited')">Popular</button>
+		</div>
+		<div id="feed">
+			<div ng-repeat="item in vendorList | orderBy:sort.column:sort.descending">
+				<div class="row">
+			        <div class="col s12 m7">
+			          <div class="card orange lighten-3 z-depth-3">
+			            <div class="card-content black-text">
+			              <span class="card-title black-text bold"> {{ item.name }}</span> <span style="float: right;"; id="ratingNum"> {{ item.rating | number : 1 }} / 5 </span>
+			              <p> Top Item: {{ item.favoriteFood }} </p> <span style="float: right;"> {{ item.numberVisited }} people visited.</span>
+			            </div>
+			            <div class="card-action">
+			              <button ng-if="allowRate(item.seen)" id="rateButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="vendorModal(item)">Rate</button>
+			            </div>
+			          </div>
+			        </div>
+			      </div>
+			 </div>
 		 </div>
-
-
-
-
-
 	</body>
 	<style>
+
+
+
+	.col.s12.m7 {
+		margin-left: auto;
+		margin-right: auto;		
+	}
+
+
+	img {
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 450px;
+		padding-top: -100px;
+	}
+
+	#myModal{
+		background-color: transparent;
+		box-shadow: none;
+	}
+
+	.input-field{
+		width: 400px;
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+		padding-bottom: 50px;
+	}
+
+	#submit {
+		display: inline;
+	}
+
+	.row {
+		margin-right: auto;
+		margin-left: auto;
+		padding-left: 400px;
+	}
+
+	.filter-cards{
+		text-align: center;
+	}
 
 	#ratingNum{
 		font-size: 20px;
 	}
 
+	.model-open .modal {
+		display: block;
+  		background: transparent;
+  		box-shadow: none;
+	}
 
-		body {
+
+		body, #filter{
 			font-family: 'Lato', sans-serif;
 			background-color: #fff3e0;
 		}
@@ -171,7 +224,7 @@
 			margin-top: 15%;
 		}
 
-		.title {
+		.title, #filter {
 			text-transform: uppercase;
 			font-weight: 900;
 			letter-spacing: 2px;
