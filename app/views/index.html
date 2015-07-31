@@ -13,6 +13,8 @@
 		<title> Outside Snacks </title>
 	</head>
 	<body ng-controller="mainController"> 
+<!-- 		<a href="./reviews.html"><button>Reviews</button></a>
+		<a href="./gallery.html"><button>Gallery</button></a> -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		  	<div class="modal-dialog">
 		    	<div class="modal-content">
@@ -24,22 +26,17 @@
 			      		<div class="row lead">
 	        				<div id="stars" class="starrr"></div>
 						</div>     				   
-<!-- <<<<<<< HEAD
-		      			<input type="text" class="form-control box" ng-model="modalReview.favoriteFood" placeholder="Favorite item"> 
-		      		</div>
-		      	<div class="modal-body">
-======= -->
 			      		<input type="text" class="form-control box" ng-model="modalReview.favoriteFood" placeholder="Favorite item"> 
+			      		<input type="text" class="form-control box" ng-model="modalReview.review" placeholder="Review">
 			      	</div>
-				 	<div class="modal-footer">
+				 	<div class="choices">
 				    	<button type="button" class="btn btn-default" data-dismiss="modal">Exit</button>
 				    	<button type="button" class="btn btn-primary" ng-click="submitModalReview(v)">Submit</button>
 				  	</div>
 		    	</div>
-<!-- >>>>>>> d06b175ccae76b1ff410f2d78b597c5936640d12
- -->		</div>
+			</div>
 		</div>
-		<div class="modal fade" id="addNewVendorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal fade" id="addNewVendorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		  	<div class="modal-dialog">
 		    	<div class="modal-content">
 		      		<div class="modal-header">
@@ -51,36 +48,26 @@
 		      				<h4 id="star-heading">Rate {{ vendor.name }}</h4>
         					<div id="stars" class="starrr"></div>
 						</div>     				   
-		      			<input type="text" class="form-control box" ng-model="vendor.favoriteFood" placeholder="Favorite item"> 
+		      			<input type="text" class="form-control box" ng-model="vendor.favoriteFood" placeholder="Favorite item">
+		      			<input type="text" class="form-control box" ng-model="vendor.review" placeholder="Review">
 		      		</div>
-				 	<div class="modal-footer">
+				 	<div class="choices">
 				    	<button type="button" class="btn btn-default" data-dismiss="modal">Exit</button>
 				    	<button type="button" class="btn btn-primary" ng-click="submitVendor()">Submit</button>
 				  	</div>
 		    	</div>
 		  	</div>
-<<<<<<< HEAD
-		 	<div class="modal-footer">
-		    	<button type="button" class="btn btn-default" data-dismiss="modal">Exit</button>
-		    	<button type="button" class="btn btn-primary" ng-click="submitVendor()">Submit</button>
-		  	</div>
-		    </div><!-- /.modal-content -->
-		  </div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-
-
+		</div>
 		<div id="heading">
 			<img src="outsidesnacks.png" alt="">
-<!-- =======
- -->	</div>
-		<div class="vendorInputs">
+		</div>
+		<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-12 col-xs-12 vendorInputs">
 			<form>
-		          <input type="text" class="form-control box empty" style="margin-top: 100px; font-size: 20px;" ng-model="vendor.name" placeholder="Add a vendor" required>
+		         <input type="text" class="form-control box empty" style="margin-top: 100px; font-size: 20px;" ng-model="vendor.name" placeholder="Add a vendor" required>
 				<button type="button" class="btn btn-primary" class="btn btn-primary" data-toggle="modal" data-target="#addNewVendorModal" ng-click="submitVendor()">Submit</button>
 			</form>
  		</div>
-
-		<div class="filter-cards"> <span id="filter"> Filter By: </span>
+		<div class="col-lg-12 filter-cards"> <span id="filter"> Filter By: </span>
 			<button type="button" class="btn btn-primary" ng-click="changeSorting('name')">Name</button>
 			<button type="button" class="btn btn-primary" ng-click="changeSorting('rating')">Rating</button>
 			<button type="button" class="btn btn-primary" ng-click="changeSorting('numberVisited')">Popular</button>
@@ -88,11 +75,11 @@
 		<div id="feed">
 			<div ng-repeat="item in vendorList | orderBy:sort.column:sort.descending">
 				<div class="row">
-			        <div class="col s12 m7">
+			        <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
 			          <div class="card orange lighten-3 z-depth-3">
 			            <div class="card-content black-text">
 			              <span class="card-title black-text bold"> {{ item.name }}</span> <span style="float: right;"; id="ratingNum"> {{ item.rating | number : 1 }} / 5 </span>
-			              <p> Top Item: {{ item.favoriteFood }} </p> <span style="float: right;"> {{ item.numberVisited }} people visited.</span>
+			              <p> Top Item: {{ item.favoriteFood }} </p> <span style="float: right;"> {{ item.numberVisited }} {{ visitOrVisits(item.numberVisited) }}</span>
 			            </div>
 			            <div class="card-action">
 			              <button ng-if="allowRate(item.seen)" id="rateButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" ng-click="vendorModal(item)">Rate</button>
@@ -103,8 +90,8 @@
 			 </div>
 		 </div>
 	</body>
-	<style>
 
+	<style>
 	.col.s12.m7 {
 		margin-left: auto;
 		margin-right: auto;		
@@ -112,13 +99,12 @@
 
 
 	img {
+		display: block;
 		margin-left: auto;
 		margin-right: auto;
-		padding-left: 450px;
-		padding-top: -100px;
 	}
 
-	#myModal{
+	#myModal, #addNewVendorModal {
 		background-color: transparent;
 		box-shadow: none;
 	}
@@ -138,24 +124,33 @@
 	.row {
 		margin-right: auto;
 		margin-left: auto;
-		padding-left: 400px;
 	}
 
 	.filter-cards{
 		text-align: center;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 50px;
 	}
-		#ratingNum{
-			font-size: 20px;
-		}
 
-		.outside {
-			margin-bottom: 0px;
-		}
-		.outside, .outside2 {
-			text-align: center;
-			margin-left: auto;
-			margin-right: auto;
-		}
+	#ratingNum{
+		font-size: 20px;
+	}
+
+	.modal h1, .modal h2, .modal h3, .modal h4 {
+		font-size: 40px;
+	}
+
+	.outside {
+		margin-bottom: 0px;
+	}
+
+	.outside, .outside2 {
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+	}
 
 	.model-open .modal {
 		display: block;
@@ -179,6 +174,7 @@
 			font-family: 'Lato', sans-serif;
 			background-color: #fff3e0;
 		}
+
 		.starrr {
 			margin: 20px;
 			text-align: center;
@@ -213,6 +209,7 @@
 			margin-top: 10vh;
 			margin-left: auto;
 			margin-right: auto;
+			display: block;
 			width: 100%;
 		}
 
@@ -258,8 +255,22 @@
 			text-align: center;
 		}
 
+		#star-heading {
+			font-size: 30px;
+			margin-top: 20px;
+			text-align: center;
+		}
+
+		.choices {
+			margin-top: 50px;
+			margin-bottom: 50px;
+			text-align: center;
+		}
+
 	</style>
 	<script>
+
+
 
 		$('#myModal').on('shown.bs.modal', function () {
 	  		$('#myInput').focus()
@@ -417,6 +428,14 @@
 			    return true;
 			}	
 
+			$scope.visitOrVisits = function(number) {
+				if (number == 1) {
+					return "visit";
+				} else {
+					return "visits";
+				}
+			}
+
 			$scope.submitVendor = function() {
 				//console.log($scope.vendorName);
 				var vendor = $scope.vendor;
@@ -440,7 +459,8 @@
 					data: {
 						vendor: clickedItem._id,
 						rating: modalRating,
-						favoriteFood: modalReview.favoriteFood
+						favoriteFood: modalReview.favoriteFood,
+						review: modalReview.review
 					}
 				}).success(function(data) {
 					console.log('finishedSubmiting')
